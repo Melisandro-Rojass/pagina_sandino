@@ -34,6 +34,53 @@
         });
     }
 
+    function initMobileNavigation() {
+        const toggle = document.getElementById('nav-toggle');
+        const menu = document.getElementById('nav-menu');
+        if (!toggle || !menu) return;
+
+        function closeMenu() {
+            menu.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.setAttribute('aria-label', 'Abrir menú');
+        }
+
+        toggle.addEventListener('click', () => {
+            const shouldOpen = toggle.getAttribute('aria-expanded') !== 'true';
+            menu.classList.toggle('is-open', shouldOpen);
+            toggle.setAttribute('aria-expanded', String(shouldOpen));
+            toggle.setAttribute('aria-label', shouldOpen ? 'Cerrar menú' : 'Abrir menú');
+        });
+
+        menu.addEventListener('click', (event) => {
+            if (event.target.closest('a')) closeMenu();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+                closeMenu();
+                toggle.focus();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('#main-header')) closeMenu();
+        });
+
+        if (window.matchMedia) {
+            const desktopViewport = window.matchMedia('(min-width: 960px)');
+            const closeMenuOnDesktop = (event) => {
+                if (event.matches) closeMenu();
+            };
+
+            if (desktopViewport.addEventListener) {
+                desktopViewport.addEventListener('change', closeMenuOnDesktop);
+            } else if (desktopViewport.addListener) {
+                desktopViewport.addListener(closeMenuOnDesktop);
+            }
+        }
+    }
+
     /**
      * Inicialización global de la aplicación
      */
@@ -47,6 +94,8 @@
         if (window.AppScroll && typeof window.AppScroll.init === 'function') {
             window.AppScroll.init();
         }
+
+        initMobileNavigation();
 
         // Configurar interacción en tarjetas
         initCardClickability();

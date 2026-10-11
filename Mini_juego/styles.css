@@ -525,3 +525,194 @@ kbd {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+@media (max-width: 768px) {
+    .game-header {
+        padding: 10px 12px;
+    }
+
+    .header-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px 10px;
+    }
+
+    .btn-return {
+        grid-column: 1;
+        grid-row: 1;
+        min-width: 0;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        text-align: center;
+    }
+
+    .btn-sound-toggle {
+        grid-column: 2;
+        grid-row: 1;
+        padding: 7px 10px;
+        font-size: 0.76rem;
+        white-space: nowrap;
+    }
+
+    .game-title-group {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .game-main-title {
+        font-size: clamp(1.05rem, 4vw, 1.35rem);
+    }
+
+    .game-subtitle {
+        font-size: clamp(0.7rem, 2.8vw, 0.82rem);
+    }
+
+    .game-wrapper {
+        width: 100%;
+        margin: 14px auto 28px;
+        padding: 0 clamp(10px, 3vw, 18px);
+    }
+
+    .game-hud {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        padding: 9px 6px;
+    }
+
+    .hud-item {
+        min-width: 0;
+        flex-direction: column;
+        gap: 3px;
+        text-align: center;
+    }
+
+    .hud-label {
+        font-size: clamp(0.56rem, 2.2vw, 0.72rem);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .hud-value {
+        font-size: clamp(0.7rem, 2.8vw, 0.85rem);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .canvas-container,
+    #gameCanvas {
+        max-width: 100%;
+    }
+
+    .touch-controls {
+        gap: 8px;
+        padding: 0 2px;
+        touch-action: none;
+    }
+
+    .touch-dpad,
+    .touch-actions {
+        gap: 8px;
+    }
+
+    .touch-btn {
+        width: clamp(44px, 13vw, 58px);
+        height: clamp(44px, 13vw, 58px);
+        touch-action: none;
+    }
+
+    .btn-action-touch,
+    .btn-jump-touch {
+        padding: 0 clamp(10px, 3vw, 18px);
+        font-size: clamp(0.68rem, 2.5vw, 0.85rem);
+    }
+
+    .game-instructions {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .instruction-box {
+        min-width: 0;
+        padding: clamp(14px, 4vw, 20px);
+    }
+
+    .instruction-box li {
+        font-size: 0.84rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .game-modal {
+        position: fixed;
+        z-index: 200;
+        overflow-y: auto;
+        padding: 12px;
+    }
+
+    .modal-content {
+        width: min(100%, 640px);
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
+        overflow-y: auto;
+        padding: clamp(18px, 5vw, 28px);
+    }
+
+    .modal-content h2 {
+        font-size: clamp(1.15rem, 5vw, 1.65rem);
+    }
+
+    .modal-body p,
+    .modal-quote {
+        font-size: 0.88rem;
+    }
+
+    .btn-game {
+        max-width: 100%;
+        padding: 11px 18px;
+        text-align: center;
+        white-space: normal;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .modal-actions .btn-game {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .game-header {
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+
+    .header-container {
+        gap: 8px 6px;
+    }
+
+    .btn-return,
+    .btn-sound-toggle {
+        padding-right: 7px;
+        padding-left: 7px;
+        font-size: 0.7rem;
+    }
+
+    .touch-controls {
+        padding: 0;
+    }
+
+    .touch-dpad,
+    .touch-actions {
+        gap: 5px;
+    }
+
+    .btn-action-touch,
+    .btn-jump-touch {
+        padding: 0 8px;
+    }
+}
