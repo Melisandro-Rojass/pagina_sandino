@@ -1,0 +1,470 @@
+/* ==========================================================================
+   LOGROS - ESTILOS DINÁMICOS Y ANIMACIONES
+   Estética patriótica (Nicaragua & Sandino), minimalista y sin parpadeos
+   ========================================================================== */
+
+:root {
+    /* Identidad Nacional de Nicaragua */
+    --nicaragua-blue: #004b87;
+    --nicaragua-blue-dark: #003366;
+    --nicaragua-blue-light: #0066b3;
+    --nicaragua-white: #ffffff;
+    --nicaragua-gold: #c69214;
+
+    /* Identidad Histórica de Sandino (Rojinegro) */
+    --sandino-red: #8b1e1e;
+    --sandino-red-hover: #a12323;
+    --sandino-black: #121316;
+    --sandino-card-bg: rgba(18, 20, 26, 0.90);
+
+    /* Neutrales y Minimalismo */
+    --bg-page: #0d0e12;
+    --text-primary: #f5f6f8;
+    --text-muted: #b4b8c4;
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --card-radius: 14px;
+    --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    --shadow-subtle: 0 8px 24px rgba(0, 0, 0, 0.28);
+    --shadow-hover: 0 14px 35px rgba(0, 0, 0, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background-color: var(--bg-page);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.65;
+    overflow-x: hidden;
+}
+
+a, button {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--nicaragua-blue-light);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   SCROLLBAR NEUTRAL Y MINIMALISTA
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 7px;
+}
+::-webkit-scrollbar-track {
+    background: #111217;
+}
+::-webkit-scrollbar-thumb {
+    background: #363945;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #4e5263;
+}
+
+/* ==========================================================================
+   BARRA SUPERIOR DE PROGRESO (MINIMALISTA)
+   ========================================================================== */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--nicaragua-blue);
+    z-index: 9999;
+    pointer-events: none;
+    transition: width 0.05s ease-out;
+}
+
+/* ==========================================================================
+   ENCABEZADO
+   ========================================================================== */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 60, 115, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: var(--transition-smooth);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+header.header-scrolled {
+    background: rgba(0, 45, 88, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    padding: 2px 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+header .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header img.logo-uni {
+    width: 54px;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    transition: transform 0.25s ease;
+}
+
+header img.logo-uni:hover {
+    transform: scale(1.04);
+}
+
+header .logo {
+    margin: 0;
+    font-weight: 700;
+    color: var(--nicaragua-white);
+    font-size: 1.2rem;
+    font-family: 'Cinzel', serif;
+}
+
+header nav {
+    display: flex;
+    gap: 6px;
+    padding: 6px 0;
+}
+
+header nav a.nav-link {
+    padding: 7px 15px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--nicaragua-white);
+    border-radius: 6px;
+    transition: var(--transition-smooth);
+}
+
+header nav a.nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+#hero {
+    margin-top: 85px;
+    padding: 65px 0 35px 0;
+    background: linear-gradient(180deg, rgba(0, 75, 135, 0.22) 0%, rgba(13, 14, 18, 0.95) 100%);
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#hero h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: #ffffff;
+    margin: 12px 0 8px 0;
+}
+
+.hero-subtitle {
+    font-size: clamp(0.98rem, 2vw, 1.15rem);
+    color: var(--nicaragua-gold);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   BOTONES
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 24px;
+    font-size: 0.94rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 26px;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition-smooth);
+    border: none;
+    user-select: none;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background-color: var(--sandino-red);
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(139, 30, 30, 0.35);
+}
+
+.btn-primary:hover {
+    background-color: var(--sandino-red-hover);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background-color: #ffffff;
+    color: var(--nicaragua-blue);
+    border: 1.5px solid var(--nicaragua-blue);
+}
+
+.btn-outline:hover {
+    background-color: var(--nicaragua-blue);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.btn-back {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 7px 16px;
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+}
+
+.btn-back:hover {
+    background-color: var(--nicaragua-blue);
+    border-color: var(--nicaragua-blue);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   BANNER DESTACADO Y GRID DE LOGROS
+   ========================================================================== */
+#info-sandino {
+    padding: 55px 0 85px 0;
+}
+
+.img-container {
+    background: var(--sandino-card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--card-radius);
+    padding: 28px;
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 45px;
+    position: relative;
+    overflow: hidden;
+}
+
+.img-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--sandino-red), var(--nicaragua-blue));
+}
+
+.img-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.img-logros {
+    width: 100%;
+    max-height: 380px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.banner-text .badge {
+    display: inline-block;
+    background-color: var(--sandino-red);
+    color: #ffffff;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+
+.banner-text h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.85rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.banner-text p {
+    font-size: 1.02rem;
+    color: #cfd2dc;
+}
+
+.logros-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+}
+
+.info {
+    background: var(--sandino-card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--card-radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow-subtle);
+    position: relative;
+    transition: var(--transition-smooth);
+}
+
+.info:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(0, 102, 179, 0.45);
+}
+
+.logro-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.logro-icon {
+    font-size: 1.6rem;
+}
+
+.info h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.35rem;
+    color: #ffffff;
+    margin: 0;
+}
+
+.info p {
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: #cfd2dc;
+}
+
+.page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 45px;
+}
+
+/* ==========================================================================
+   PIE DE PÁGINA Y BOTÓN FLOTANTE
+   ========================================================================== */
+footer {
+    background-color: #090a0d;
+    color: #9094a2;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 0.92rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-back-to-top {
+    position: fixed;
+    bottom: 26px;
+    right: 26px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #181a24;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: var(--transition-smooth);
+    z-index: 999;
+}
+
+.btn-back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.btn-back-to-top:hover {
+    background-color: var(--nicaragua-blue);
+    border-color: var(--nicaragua-blue-light);
+    transform: translateY(-2px);
+}
+
+.reveal-item {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+    header .container {
+        flex-direction: row;
+        padding-top: 11px;
+        padding-bottom: 11px;
+    }
+
+    .img-container {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .img-wrapper {
+        flex: 1;
+    }
+
+    .banner-text {
+        flex: 1.2;
+    }
+
+    .logros-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
