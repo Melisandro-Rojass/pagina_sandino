@@ -32,7 +32,13 @@ const AUDIO_CONFIG = {
         // --- EFECTOS DE SONIDO (SFX) ---
         jump: "",          // Ejemplo: "sounds/salto.mp3"
         itemCollect: "",   // Ejemplo: "sounds/moneda.mp3" (bandera/manifiesto)
-        attack: "",        // Ejemplo: "sounds/disparo.mp3" o "sounds/accion.mp3"
+        attack: "",        // Ejemplo: "sounds/machete.mp3"
+        shoot: "",         // Ejemplo: "sounds/disparo_fusil.mp3"
+        bossHit: "",       // Ejemplo: "sounds/impacto_jefe.mp3"
+        bossDefeat: "",    // Ejemplo: "sounds/jefe_derrotado.mp3"
+        bossShoot: "",     // Ejemplo: "sounds/disparo_jefe.mp3"
+        mapOpen: "",       // Ejemplo: "sounds/abrir_mapa.mp3"
+        ammoReload: "",    // Ejemplo: "sounds/recarga.mp3"
         enemyDefeat: "",   // Ejemplo: "sounds/enemigo_derrotado.mp3"
         playerHit: "",     // Ejemplo: "sounds/golpe.mp3"
         levelWin: "",      // Ejemplo: "sounds/nivel_completado.mp3"
@@ -152,14 +158,81 @@ class SoundManager {
                 break;
 
             case 'attack':
-                // Sonido de disparo o emboscada guerrillera
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(520, now);
-                osc.frequency.exponentialRampToValueAtTime(80, now + 0.16);
-                gain.gain.setValueAtTime(0.2 * AUDIO_CONFIG.sfxVolume, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+                // Sonido de tajo de machete (rápido y afilado)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(480, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
+                gain.gain.setValueAtTime(0.25 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
                 osc.start(now);
-                osc.stop(now + 0.17);
+                osc.stop(now + 0.13);
+                break;
+
+            case 'shoot':
+                // Disparo de fusil máuser (estampido con golpe seco)
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+                gain.gain.setValueAtTime(0.35 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.16);
+                break;
+
+            case 'bossHit':
+                // Impacto contundente contra el blindaje/jefe
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(140, now);
+                osc.frequency.exponentialRampToValueAtTime(45, now + 0.18);
+                gain.gain.setValueAtTime(0.3 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                osc.start(now);
+                osc.stop(now + 0.19);
+                break;
+
+            case 'bossDefeat':
+                // Gran explosión/derrota de jefe histórico
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.7);
+                gain.gain.setValueAtTime(0.4 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+                osc.start(now);
+                osc.stop(now + 0.72);
+                break;
+
+            case 'bossShoot':
+                // Disparo de ametralladora o cañón del jefe
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.exponentialRampToValueAtTime(70, now + 0.12);
+                gain.gain.setValueAtTime(0.22 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.start(now);
+                osc.stop(now + 0.13);
+                break;
+
+            case 'mapOpen':
+                // Campaneo histórico al abrir el mapa de Nicaragua
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // Do
+                osc.frequency.setValueAtTime(659.25, now + 0.08); // Mi
+                osc.frequency.setValueAtTime(783.99, now + 0.16); // Sol
+                gain.gain.setValueAtTime(0.2 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.36);
+                break;
+
+            case 'ammoReload':
+                // Cerrojo del fusil (recarga rápida)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(350, now);
+                osc.frequency.setValueAtTime(550, now + 0.06);
+                gain.gain.setValueAtTime(0.18 * AUDIO_CONFIG.sfxVolume, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.16);
                 break;
 
             case 'enemyDefeat':
@@ -263,6 +336,10 @@ class SoundManager {
 
     toggleSound() {
         this.enabled = !this.enabled;
+        if (!this.enabled) {
+            this.stopBattleMusic();
+            this.stopMusic();
+        }
         return this.enabled;
     }
 
@@ -272,6 +349,181 @@ class SoundManager {
             this.stopMusic();
         }
         return this.musicEnabled;
+    }
+
+    /**
+     * Soundtrack procedural de batalla por nivel histórico
+     * Genera música única para cada uno de los 6 niveles de la Gesta de Sandino
+     */
+    playBattleMusic(levelIndex) {
+        this.stopBattleMusic();
+        if (!this.musicEnabled) return;
+        this.ensureActive();
+        if (!this.ctx) return;
+
+        // Patrones de notas por nivel (frecuencias Hz) + BPM + carácter
+        const levelMusic = [
+            // Nivel 1: Niquinohomo - Tensión guerrillera campesina
+            {
+                bpm: 78,
+                notes: [196, 220, 246, 220, 196, 174, 196, 220],
+                bassNotes: [98, 110, 98, 87],
+                waveType: 'triangle',
+                bassWave: 'sawtooth',
+                color: 'warm',
+                volume: 0.08
+            },
+            // Nivel 2: San Albino - Marcha rebelde combativa
+            {
+                bpm: 110,
+                notes: [293, 329, 369, 329, 293, 261, 293, 329],
+                bassNotes: [146, 130, 146, 116],
+                waveType: 'square',
+                bassWave: 'sawtooth',
+                color: 'march',
+                volume: 0.09
+            },
+            // Nivel 3: El Chipote - Batalla aérea, tensión dramática
+            {
+                bpm: 130,
+                notes: [233, 261, 293, 261, 233, 207, 185, 207],
+                bassNotes: [116, 130, 116, 103],
+                waveType: 'sawtooth',
+                bassWave: 'square',
+                color: 'battle',
+                volume: 0.10
+            },
+            // Nivel 4: Retirada Marines - Marcha triunfal soberana
+            {
+                bpm: 95,
+                notes: [349, 392, 440, 392, 349, 329, 349, 392],
+                bassNotes: [174, 196, 174, 164],
+                waveType: 'triangle',
+                bassWave: 'triangle',
+                color: 'victory',
+                volume: 0.09
+            },
+            // Nivel 5: Wiwilí - Campo tranquilo, cooperativa, esperanza
+            {
+                bpm: 68,
+                notes: [329, 370, 415, 370, 329, 293, 329, 370],
+                bassNotes: [164, 185, 164, 146],
+                waveType: 'sine',
+                bassWave: 'triangle',
+                color: 'peaceful',
+                volume: 0.07
+            },
+            // Nivel 6: Managua/Tiscapa - Drama oscuro, jefe final, épico
+            {
+                bpm: 118,
+                notes: [220, 246, 261, 246, 220, 196, 174, 196],
+                bassNotes: [110, 98, 87, 98],
+                waveType: 'sawtooth',
+                bassWave: 'square',
+                color: 'dark',
+                volume: 0.11
+            }
+        ];
+
+        const lvlMusic = levelMusic[Math.min(levelIndex, levelMusic.length - 1)];
+        const beatDuration = 60 / lvlMusic.bpm;
+        const noteLen = beatDuration * 0.85;
+        const vol = lvlMusic.volume * AUDIO_CONFIG.musicVolume * (this.enabled ? 1 : 0);
+
+        // Función para programar una nota
+        const scheduleNote = (freq, startTime, duration, waveType, gainVal, detune = 0) => {
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gainNode = this.ctx.createGain();
+            const filter = this.ctx.createBiquadFilter();
+
+            osc.type = waveType;
+            osc.frequency.setValueAtTime(freq, startTime);
+            osc.detune.setValueAtTime(detune, startTime);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(lvlMusic.color === 'battle' ? 2200 : 1400, startTime);
+
+            osc.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(this.ctx.destination);
+
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(gainVal, startTime + 0.02);
+            gainNode.gain.setValueAtTime(gainVal, startTime + duration * 0.7);
+            gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+
+            osc.start(startTime);
+            osc.stop(startTime + duration + 0.05);
+        };
+
+        // Programar 2 compases completos y repetirlos con setInterval
+        const loopBars = 2;
+        const totalNotes = lvlMusic.notes.length;
+        const barDuration = totalNotes * beatDuration * loopBars;
+
+        const playBar = (startOffset) => {
+            if (!this.ctx || !this.battleMusicActive) return;
+            const now = this.ctx.currentTime + startOffset;
+
+            // Melodía principal
+            for (let n = 0; n < totalNotes; n++) {
+                const t = now + n * beatDuration;
+                scheduleNote(lvlMusic.notes[n], t, noteLen, lvlMusic.waveType, vol);
+                // Armonía a una 5a justa
+                if (lvlMusic.color !== 'peaceful') {
+                    scheduleNote(lvlMusic.notes[n] * 1.5, t, noteLen * 0.8, lvlMusic.waveType, vol * 0.35, -8);
+                }
+            }
+
+            // Bajo (mitad de velocidad)
+            const bassNotes = lvlMusic.bassNotes;
+            for (let b = 0; b < bassNotes.length; b++) {
+                const t = now + b * beatDuration * 2;
+                scheduleNote(bassNotes[b], t, beatDuration * 1.7, lvlMusic.bassWave, vol * 0.55);
+            }
+
+            // Percusión rítmica sintética (ruido filtrado como tambor)
+            for (let d = 0; d < totalNotes; d++) {
+                if (d % 2 === 0) {
+                    const t = now + d * beatDuration;
+                    const noise = this.ctx.createOscillator();
+                    const noiseGain = this.ctx.createGain();
+                    const noiseFilter = this.ctx.createBiquadFilter();
+                    noise.type = 'sawtooth';
+                    noise.frequency.setValueAtTime(55, t);
+                    noise.frequency.exponentialRampToValueAtTime(25, t + 0.08);
+                    noiseFilter.type = 'bandpass';
+                    noiseFilter.frequency.setValueAtTime(120, t);
+                    noise.connect(noiseFilter);
+                    noiseFilter.connect(noiseGain);
+                    noiseGain.connect(this.ctx.destination);
+                    noiseGain.gain.setValueAtTime(vol * 0.4, t);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+                    noise.start(t);
+                    noise.stop(t + 0.12);
+                }
+            }
+        };
+
+        this.battleMusicActive = true;
+        playBar(0.1);
+
+        // Repetir en bucle
+        this._battleMusicInterval = setInterval(() => {
+            if (!this.ctx || !this.battleMusicActive) {
+                clearInterval(this._battleMusicInterval);
+                return;
+            }
+            playBar(0.05);
+        }, barDuration * 1000);
+    }
+
+    stopBattleMusic() {
+        this.battleMusicActive = false;
+        if (this._battleMusicInterval) {
+            clearInterval(this._battleMusicInterval);
+            this._battleMusicInterval = null;
+        }
     }
 }
 

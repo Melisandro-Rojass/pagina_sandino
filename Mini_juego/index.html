@@ -21,112 +21,253 @@
                 <h1 class="game-main-title">La Gesta de Sandino</h1>
                 <p class="game-subtitle">Aventura Educativa Progresiva (1895 – 1934)</p>
             </div>
-            <button id="btnToggleSound" class="btn-sound-toggle">🔊 Sonido: ON</button>
+            <div class="header-actions">
+                <button id="btnToggleControls" class="btn-controls-toggle" title="Mostrar u ocultar la guía de controles">🎮 Guía de Controles</button>
+                <button id="btnOpenMap" class="btn-map-toggle" title="Ver progreso de campaña en el mapa de Nicaragua">🗺️ Mapa de Campaña</button>
+                <button id="btnToggleSound" class="btn-sound-toggle">🔊 Sonido: ON</button>
+            </div>
         </div>
     </header>
 
     <main class="game-wrapper">
-        <!-- Barra de Estado / HUD del Jugador -->
-        <div class="game-hud">
-            <div class="hud-item">
-                <span class="hud-label">Vidas:</span>
-                <span id="hudLives" class="hud-value">❤️❤️❤️</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">Progreso Histórico:</span>
-                <span id="hudLevel" class="hud-value">Nivel 1 de 6</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">Soberanía / Coleccionables:</span>
-                <span id="hudScore" class="hud-value">0 / 3</span>
-            </div>
-        </div>
+        <!-- Pestaña flotante lateral izquierda para reabrir controles cuando esté oculto -->
+        <button id="btnSideToggleControls" class="side-controls-toggle" title="Mostrar Guía de Controles">
+            <span>🎮 Controles</span>
+        </button>
 
-        <!-- Contenedor del Lienzo del Juego -->
-        <div class="canvas-container">
-            <canvas id="gameCanvas" width="1200" height="520"></canvas>
+        <!-- Fondo oscuro para cerrar en móvil al tocar fuera -->
+        <div id="controlsBackdrop" class="controls-backdrop"></div>
 
-            <!-- Modal Educativo de Inicio de Nivel -->
-            <div id="dialogueModal" class="game-modal">
-                <div class="modal-content">
-                    <span class="modal-badge">Contexto Pedagógico</span>
-                    <h2 id="dialogueTitle">Nivel 1: Niquinohomo y el Despertar</h2>
-                    <p id="dialoguePeriod" class="modal-meta">Época: 1895 – 1926 · Lugar: Niquinohomo</p>
-                    <div class="modal-body">
-                        <p id="dialogueText">Texto de historia aquí...</p>
-                        <div class="modal-mission">
-                            <strong id="dialogueMission">🎯 Misión: Recolecta los manifiestos...</strong>
+        <!-- Contenedor Principal: Panel Izquierdo de Controles + Minijuego al Centro -->
+        <div class="game-layout-container">
+            <!-- Panel Lateral Izquierdo de Controles (Colapsable) -->
+            <aside id="controlsSidebar" class="controls-sidebar is-open">
+                <div class="sidebar-header">
+                    <div class="sidebar-title-group">
+                        <span class="sidebar-icon">🎮</span>
+                        <h3>Guía de Controles</h3>
+                    </div>
+                    <button id="btnCloseControls" class="btn-close-controls" aria-label="Ocultar Guía de Controles" title="Ocultar Guía">✕</button>
+                </div>
+                <div class="sidebar-body">
+                    <ul class="controls-list">
+                        <li>
+                            <div class="keys"><kbd>←</kbd> <kbd>→</kbd> / <kbd>A</kbd> <kbd>D</kbd></div>
+                            <div class="desc">Mover a Sandino a los lados</div>
+                        </li>
+                        <li>
+                            <div class="keys"><kbd>W</kbd> / <kbd>Espacio</kbd></div>
+                            <div class="desc">Saltar plataformas y obstáculos</div>
+                        </li>
+                        <li class="control-featured">
+                            <div class="keys"><kbd>↑</kbd> + <kbd>X</kbd> / <kbd>C</kbd></div>
+                            <div class="desc"><strong>🎯 Disparar Hacia Arriba</strong> — mantén ↑ y presiona X o C</div>
+                        </li>
+                        <li>
+                            <div class="keys"><kbd>X</kbd> o <kbd>C</kbd></div>
+                            <div class="desc"><strong>🔫 Disparar Fusil Máuser</strong> (horizontal)</div>
+                        </li>
+                        <li>
+                            <div class="keys"><kbd>Z</kbd></div>
+                            <div class="desc"><strong>⚔️ Tajo con Machete</strong> (cuerpo a cuerpo)</div>
+                        </li>
+                        <li>
+                            <div class="keys"><kbd>M</kbd></div>
+                            <div class="desc"><strong>🗺️ Abrir Mapa de Nicaragua</strong></div>
+                        </li>
+                    </ul>
+                    <div class="sidebar-tip">
+                        <small>💡 <em>Jefes Históricos:</em> Nivel 3 = Biplano Interventor (dispara <kbd>↑</kbd> + <kbd>X</kbd> para alcanzarlo). Nivel 6 = Comandante de la Guardia Traidora (Somoza). Música de batalla única en cada nivel.</small>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Área Central del Minijuego -->
+            <div class="game-center-wrapper">
+                <!-- Barra de Estado / HUD del Jugador -->
+                <div class="game-hud">
+                    <div class="hud-item">
+                        <span class="hud-label">Vidas:</span>
+                        <span id="hudLives" class="hud-value">❤️❤️❤️</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Progreso Histórico:</span>
+                        <span id="hudLevel" class="hud-value">Nivel 1 de 6</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Misión / Objetivos:</span>
+                        <span id="hudScore" class="hud-value">0 / 3</span>
+                    </div>
+                    <div class="hud-item hud-ammo-item">
+                        <span class="hud-label">Fusil de Campaña:</span>
+                        <span id="hudAmmo" class="hud-value">🎯 6 / 6</span>
+                    </div>
+                </div>
+
+                <!-- Barra de Vida del Jefe Histórico (Aparece en Niveles de Jefe) -->
+                <div id="hudBossContainer" class="hud-boss-bar is-hidden">
+                    <div class="boss-info">
+                        <span id="bossName" class="boss-name">⚔️ Jefe: Biplano Interventor</span>
+                        <span id="bossHpText" class="boss-hp-text">100 / 100 HP</span>
+                    </div>
+                    <div class="boss-bar-track">
+                        <div id="bossBarFill" class="boss-bar-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Contenedor del Lienzo del Juego -->
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="1200" height="520"></canvas>
+
+                    <!-- Modal Educativo de Inicio de Nivel -->
+                    <div id="dialogueModal" class="game-modal">
+                        <div class="modal-content">
+                            <span class="modal-badge">Contexto Pedagógico</span>
+                            <h2 id="dialogueTitle">Nivel 1: Niquinohomo y el Despertar</h2>
+                            <p id="dialoguePeriod" class="modal-meta">Época: 1895 – 1926 · Lugar: Niquinohomo</p>
+                            <div class="modal-body">
+                                <p id="dialogueText">Texto de historia aquí...</p>
+                                <div class="modal-mission">
+                                    <strong id="dialogueMission">🎯 Misión: Recolecta los manifiestos...</strong>
+                                </div>
+                                <blockquote id="dialogueQuote" class="modal-quote">“La soberanía de un pueblo no se discute...”</blockquote>
+                            </div>
+                            <div class="modal-actions">
+                                <button id="btnStartLevel" class="btn-game btn-play">Comenzar Misión ▶</button>
+                                <button id="btnModalMap" class="btn-game btn-retry">🗺️ Ver Mapa de Rutas</button>
+                            </div>
                         </div>
-                        <blockquote id="dialogueQuote" class="modal-quote">“La soberanía de un pueblo no se discute...”</blockquote>
                     </div>
-                    <button id="btnStartLevel" class="btn-game btn-play">Comenzar Misión ▶</button>
-                </div>
-            </div>
 
-            <!-- Modal de Nivel Completado -->
-            <div id="levelWinModal" class="game-modal">
-                <div class="modal-content victory-content">
-                    <span class="modal-badge badge-gold">¡Hito Histórico Alcanzado!</span>
-                    <h2 id="winTitle">¡Victoria de Nivel!</h2>
-                    <p id="winDesc">Descripción de la victoria histórica...</p>
-                    <button id="btnNextLevel" class="btn-game btn-next">Avanzar en la Historia ➔</button>
-                </div>
-            </div>
+                    <!-- Modal de Nivel Completado -->
+                    <div id="levelWinModal" class="game-modal">
+                        <div class="modal-content victory-content">
+                            <span class="modal-badge badge-gold">¡Hito Histórico Alcanzado!</span>
+                            <h2 id="winTitle">¡Victoria de Nivel!</h2>
+                            <p id="winDesc">Descripción de la victoria histórica...</p>
+                            <div class="modal-actions">
+                                <button id="btnNextLevel" class="btn-game btn-next">Avanzar por el Mapa ➔</button>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Modal de Derrota / Reintento -->
-            <div id="gameOverModal" class="game-modal">
-                <div class="modal-content defeat-content">
-                    <span class="modal-badge badge-red">La Lucha Continúa</span>
-                    <h2>Sandino se Repliega</h2>
-                    <p>Las circunstancias fueron adversas en este intento. Como decía Sandino: <em>"En la lucha por la patria no hay rendición, sino reorganización táctica"</em>.</p>
-                    <button id="btnRetry" class="btn-game btn-retry">Reintentar Nivel ↺</button>
-                </div>
-            </div>
+                    <!-- Modal de Derrota / Reintento -->
+                    <div id="gameOverModal" class="game-modal">
+                        <div class="modal-content defeat-content">
+                            <span class="modal-badge badge-red">La Lucha Continúa</span>
+                            <h2>Sandino se Repliega</h2>
+                            <p>Las circunstancias fueron adversas en este intento. Como decía Sandino: <em>"En la lucha por la patria no hay rendición, sino reorganización táctica"</em>.</p>
+                            <div class="modal-actions">
+                                <button id="btnRetry" class="btn-game btn-retry">Reintentar Nivel ↺</button>
+                                <button id="btnGameOverMap" class="btn-game btn-play">🗺️ Consultar Mapa</button>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Modal de Victoria Final y Epílogo -->
-            <div id="finalVictoryModal" class="game-modal">
-                <div class="modal-content epilogue-content">
-                    <span class="modal-badge badge-gold">¡Gesta Completada!</span>
-                    <h2>General de Hombres Libres</h2>
-                    <p>Has recorrido toda la trayectoria histórica de Augusto C. Sandino: desde sus humildes orígenes en Niquinohomo, su heroica resistencia armada en Las Segovias expulsando a las tropas interventoras, su proyecto de paz y cooperativas en Wiwilí, hasta su elevación a la <strong>Inmortalidad como Héroe Nacional de Nicaragua</strong>.</p>
-                    <blockquote class="modal-quote">“Sandino vive en la soberanía y la dignidad del pueblo nicaragüense”.</blockquote>
-                    <div class="modal-actions">
-                        <button id="btnRestartAll" class="btn-game btn-retry">Jugar de Nuevo ↺</button>
-                        <a href="../index.html" class="btn-game btn-play">Regresar al Sitio Principal 🏛️</a>
+                    <!-- Modal del Mapa Interactivo de la Campaña de Nicaragua -->
+                    <div id="campaignMapModal" class="game-modal map-modal">
+                        <div class="modal-content map-modal-content">
+                            <span class="modal-badge badge-gold">🗺️ Geografía Histórica de Nicaragua</span>
+                            <h2>Ruta de la Gesta Patriótica (1895 – 1934)</h2>
+                            <p class="map-subtitle">Avanza por cada región de Nicaragua para defender la soberanía y derrotar a los jefes de ocupación:</p>
+                            
+                            <div class="campaign-map-canvas-wrapper">
+                                <div class="campaign-map-board" id="campaignMapBoard">
+                                    <div class="map-route-line"></div>
+                                    
+                                    <!-- Nodo 1 -->
+                                    <div class="map-node node-unlocked" data-level="0" id="mapNode0">
+                                        <div class="node-marker">1</div>
+                                        <div class="node-info">
+                                            <span class="node-name">Niquinohomo</span>
+                                            <span class="node-desc">El Despertar (1895)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nodo 2 -->
+                                    <div class="map-node" data-level="1" id="mapNode1">
+                                        <div class="node-marker">2</div>
+                                        <div class="node-info">
+                                            <span class="node-name">San Albino</span>
+                                            <span class="node-desc">Rechazo al Espino Negro</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nodo 3 (Jefe 1) -->
+                                    <div class="map-node node-boss" data-level="2" id="mapNode2">
+                                        <div class="node-marker">⚔️ 3</div>
+                                        <div class="node-info">
+                                            <span class="node-name">El Chipote</span>
+                                            <span class="node-desc">¡Jefe: Biplano Interventor!</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nodo 4 -->
+                                    <div class="map-node" data-level="3" id="mapNode3">
+                                        <div class="node-marker">4</div>
+                                        <div class="node-info">
+                                            <span class="node-name">Las Segovias</span>
+                                            <span class="node-desc">Expulsión de Marines</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nodo 5 -->
+                                    <div class="map-node" data-level="4" id="mapNode4">
+                                        <div class="node-marker">5</div>
+                                        <div class="node-info">
+                                            <span class="node-name">Río Coco / Wiwilí</span>
+                                            <span class="node-desc">Cooperativas Agrícolas</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nodo 6 (Jefe Final) -->
+                                    <div class="map-node node-boss node-final" data-level="5" id="mapNode5">
+                                        <div class="node-marker">👑 6</div>
+                                        <div class="node-info">
+                                            <span class="node-name">Loma de Tiscapa</span>
+                                            <span class="node-desc">¡Jefe Final: Inmortalidad!</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-actions map-actions">
+                                <button id="btnCloseMap" class="btn-game btn-play">Volver a la Misión ➔</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal de Victoria Final y Epílogo -->
+                    <div id="finalVictoryModal" class="game-modal">
+                        <div class="modal-content epilogue-content">
+                            <span class="modal-badge badge-gold">¡Gesta Patriótica Culminada!</span>
+                            <h2>General de Hombres Libres</h2>
+                            <p>Has recorrido victoriosamente todo el mapa y los hitos históricos de Augusto C. Sandino: desde Niquinohomo, el combate armado en El Chipote derribando la aviación interventora, la expulsión de las tropas extranjeras, las cooperativas campesinas de Wiwilí, hasta triunfar sobre la conspiración en Managua, elevándote a la <strong>Inmortalidad como Héroe Nacional de Nicaragua</strong>.</p>
+                            <blockquote class="modal-quote">“La soberanía de un pueblo no se discute, se defiende con las armas en la mano. ¡Sandino vive en la dignidad de Nicaragua!”.</blockquote>
+                            <div class="modal-actions">
+                                <button id="btnRestartAll" class="btn-game btn-retry">Jugar la Gesta de Nuevo ↺</button>
+                                <a href="../index.html" class="btn-game btn-play">Regresar al Sitio Principal 🏛️</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles Táctiles Optimizados para Móviles y Tablets -->
+                <div class="touch-controls" id="touchControls">
+                    <div class="touch-dpad">
+                        <button id="btnTouchLeft" class="touch-btn" aria-label="Mover a la Izquierda">◀</button>
+                        <button id="btnTouchRight" class="touch-btn" aria-label="Mover a la Derecha">▶</button>
+                        <button id="btnTouchAimUp" class="touch-btn btn-aim-touch" aria-label="Apuntar Arriba" title="Apuntar Arriba">▲</button>
+                    </div>
+                    <div class="touch-actions">
+                        <button id="btnTouchShoot" class="touch-btn btn-shoot-touch" aria-label="Disparar Fusil">🔫 Disparar</button>
+                        <button id="btnTouchAction" class="touch-btn btn-action-touch" aria-label="Machete">⚔️ Machete</button>
+                        <button id="btnTouchJump" class="touch-btn btn-jump-touch" aria-label="Saltar">🦘 Salto</button>
+                        <button id="btnTouchMap" class="touch-btn btn-map-touch" aria-label="Ver Mapa">🗺️</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Controles Táctiles para Móviles / Tablets -->
-        <div class="touch-controls" id="touchControls">
-            <div class="touch-dpad">
-                <button id="btnTouchLeft" class="touch-btn" aria-label="Izquierda">◀</button>
-                <button id="btnTouchRight" class="touch-btn" aria-label="Derecha">▶</button>
-            </div>
-            <div class="touch-actions">
-                <button id="btnTouchAction" class="touch-btn btn-action-touch" aria-label="Atacar">⚔️ Atacar</button>
-                <button id="btnTouchJump" class="touch-btn btn-jump-touch" aria-label="Salto">▲ Saltar</button>
-            </div>
-        </div>
-
-        <!-- Panel de Instrucciones y Guía de Controles -->
-        <section class="game-instructions">
-            <div class="instruction-box">
-                <h3>🎮 Controles de Teclado</h3>
-                <ul>
-                    <li><kbd>←</kbd> <kbd>→</kbd> o <kbd>A</kbd> <kbd>D</kbd> : Mover a Sandino a los lados</li>
-                    <li><kbd>↑</kbd> o <kbd>W</kbd> o <kbd>Barra Espaciadora</kbd> : Saltar plataformas y obstáculos</li>
-                    <li><kbd>Z</kbd> o <kbd>X</kbd> : Atacar con el machete / rifle de Sandino (neutraliza enemigos cercanos)</li>
-                </ul>
-            </div>
-
-            <div class="instruction-box audio-instruction-box">
-                <h3>🎵 Personalización de Sonidos a tu Gusto</h3>
-                <p>El juego ya cuenta con <strong>sonidos sintetizados en tiempo real</strong>. Si deseas colocar tus propias canciones o audios:</p>
-                <p>Abre el archivo <code>audioConfig.js</code> y añade tus archivos en la sección <code>CUSTOM_AUDIO_FILES</code>.</p>
-            </div>
-        </section>
     </main>
 
     <!-- Scripts del Motor y Configuración de Sonido -->
